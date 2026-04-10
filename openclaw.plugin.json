@@ -1,0 +1,45 @@
+{
+  "id": "@acwilan/macvoice",
+  "name": "macOS Voice Messages",
+  "description": "Transcribe voice messages and respond with voice using native macOS speech APIs via voicecli.",
+  "version": "0.1.0",
+  "author": "Andres Rovira",
+  "license": "MIT",
+  "type": "plugin",
+  "enabledByDefault": false,
+  "providers": ["@acwilan/macvoice"],
+  "platforms": ["darwin"],
+  "contracts": {
+    "voiceProviders": ["@acwilan/macvoice"]
+  },
+  "requirements": [
+    {
+      "type": "cli",
+      "command": "voicecli",
+      "optional": false,
+      "description": "voicecli must be installed via Homebrew"
+    }
+  ],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "voice": {
+        "type": "string",
+        "description": "Voice identifier for TTS (run 'voicecli voices' to list available)"
+      },
+      "rate": {
+        "type": "number",
+        "default": 0.5,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "description": "Speech rate 0.0-1.0 (default: 0.5)"
+      },
+      "tempDir": {
+        "type": "string",
+        "default": "~/tmp/openclaw-macvoice",
+        "description": "Directory for temporary audio files"
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  build-and-publish:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build TypeScript
+        run: npm run build
+
+      - name: Verify build output
+        run: ls -la dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to ClawHub
+        run: |
+          if command -v clawhub &> /dev/null; then
+            clawhub publish
+          else
+            echo "ClawHub CLI not installed, skipping ClawHub publish"
+            echo "To publish manually: clawhub publish"
+          fi
+        env:
+          CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}

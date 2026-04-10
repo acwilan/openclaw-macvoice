@@ -1,0 +1,42 @@
+{
+  "name": "@acwilan/openclaw-macvoice-plugin",
+  "version": "0.1.0",
+  "description": "OpenClaw plugin for macOS voice message support via voicecli",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "changelog:check": "conventional-changelog -p angular -i CHANGELOG.md -s --dry-run",
+    "version:patch": "npm version patch \u0026\u0026 npm run changelog \u0026\u0026 git add CHANGELOG.md package.json \u0026\u0026 git commit -m \"chore(release): update changelog and bump version\"",
+    "version:minor": "npm version minor \u0026\u0026 npm run changelog \u0026\u0026 git add CHANGELOG.md package.json \u0026\u0026 git commit -m \"chore(release): update changelog and bump version\"",
+    "version:major": "npm version major \u0026\u0026 npm run changelog \u0026\u0026 git add CHANGELOG.md package.json \u0026\u0026 git commit -m \"chore(release): update changelog and bump version\"",
+    "publish:clawhub": "clawhub package publish \"$(pwd)\" --family code-plugin --source-repo acwilan/openclaw-macvoice --source-commit $(git rev-parse HEAD) --name @acwilan/macvoice --version $(node -p \"require('./package.json').version\")"
+  },
+  "keywords": [
+    "openclaw",
+    "voice",
+    "macos",
+    "telegram",
+    "tts",
+    "transcription"
+  ],
+  "author": "Andres Rovira",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.0.0",
+    "conventional-changelog-cli": "^5.0.0",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.9",
+    "typescript": "^5.0.0"
+  },
+  "openclaw": {
+    "id": "@acwilan/macvoice",
+    "name": "macOS Voice Messages",
+    "description": "Transcribe voice messages and respond with voice (macOS only)",
+    "version": "0.1.0"
+  }
+}
