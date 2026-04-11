@@ -147,35 +147,63 @@ export class VoicePlugin {
   }
 }
 
-// OpenClaw plugin hook
-export default {
-  name: 'macvoice',
-  version: '0.1.0',
+// OpenClaw plugin hook - exports register function for proper plugin activation
+export function register(api: any) {
+  const pluginId = 'macvoice';
   
-  async init(ctx: any, config: VoicePluginConfig) {
-    const plugin = new VoicePlugin(config);
-    await plugin.init();
+  // Register as a speech provider (TTS + STT)
+  api.registerSpeechProvider?.({
+    id: pluginId,
+    name: 'macOS Voice (voicecli)',
     
-    // Store instance on context
-    ctx.voice = plugin;
+    // Text-to-speech
+    async synthesize(text: string, options?: { voice?: string; rate?: number; outputPath?: string }) {
+      const plugin = new VoicePlugin({
+        voice: options?.voice,
+        rate: options?.rate,
+      });
+      await plugin.init();
+      return plugin.speak(text, { outputPath: options?.outputPath });
+    },
     
-    return plugin;
-  },
+    // Speech-to-text (transcription)
+    async transcribe(audioPath: string) {
+      const plugin = new VoicePlugin();
+      await plugin.init();
+      return plugin.transcribe(audioPath);
+    },
+    
+    // List available voices
+    async listVoices() {
+      const { stdout } = await execAsync('voicecli voices');
+      return stdout.trim().split('\n').filter(line => line.length > 0);
+    },
+  });
+  
+  // Also register hooks for voice message handling
+  api.on?.('message_received', async (ctx: any, message: any) => {
+    // Check if this is a voice message
+    if (message.voice || message.audio) {
+      const audioPath = message.voice?.file_path || message.audio?.file_path;
+      if (audioPath) {
+        const plugin = new VoicePlugin();
+        await plugin.init();
+        const transcription = await plugin.transcribe(audioPath);
+        
+        // Attach transcription to message
+        message.transcription = transcription;
+        message.text = transcription; // Make it available as text too
+      }
+    }
+    return message;
+  });
+  
+  // Log registration
+  api.logger?.info?.('macvoice plugin registered');
+}
 
-  async onVoiceMessage(ctx: any, message: { audioPath: string; transcription?: string }) {
-    const plugin = ctx.voice as VoicePlugin;
-    
-    // Transcribe the voice message
-    const transcription = await plugin.transcribe(message.audioPath);
-    
-    return {
-      ...message,
-      transcription,
-    };
-  },
+// Legacy alias for backward compatibility
+export const activate = register;
 
-  async speak(ctx: any, text: string, options?: { outputPath?: string }) {
-    const plugin = ctx.voice as VoicePlugin;
-    return plugin.speak(text, options);
-  },
-};
+// Default export for OpenClaw
+export default register;

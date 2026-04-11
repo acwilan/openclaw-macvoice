@@ -1,4 +1,4 @@
-import { VoicePlugin } from './index';
+import { VoicePlugin, register, activate } from './index';
 
 // Mock child_process
 jest.mock('child_process', () => ({
@@ -10,6 +10,8 @@ jest.mock('child_process', () => ({
       callback(null, { stdout: 'Saved to: /tmp/test.aiff\n' });
     } else if (cmd.includes('--help')) {
       callback(null, { stdout: 'Usage: voicecli\n' });
+    } else if (cmd.includes('voices')) {
+      callback(null, { stdout: 'Samantha\nAlex\nVictoria\n' });
     } else {
       callback(null, { stdout: '' });
     }
@@ -69,14 +71,35 @@ describe('VoicePlugin', () => {
 });
 
 describe('OpenClaw plugin export', () => {
-  it('should export plugin with required properties', async () => {
-    const plugin = await import('./index');
-    const defaultExport = plugin.default;
+  it('should export register function', () => {
+    expect(typeof register).toBe('function');
+  });
 
-    expect(defaultExport).toHaveProperty('name', 'macvoice');
-    expect(defaultExport).toHaveProperty('version', '0.1.0');
-    expect(defaultExport).toHaveProperty('init');
-    expect(defaultExport).toHaveProperty('onVoiceMessage');
-    expect(defaultExport).toHaveProperty('speak');
+  it('should export activate as alias for register', () => {
+    expect(typeof activate).toBe('function');
+    expect(activate).toBe(register);
+  });
+
+  it('should register speech provider when called with api', async () => {
+    const mockApi = {
+      registerSpeechProvider: jest.fn(),
+      on: jest.fn(),
+      logger: { info: jest.fn() },
+    };
+    
+    register(mockApi);
+    
+    expect(mockApi.registerSpeechProvider).toHaveBeenCalled();
+    expect(mockApi.on).toHaveBeenCalledWith('message_received', expect.any(Function));
+    expect(mockApi.logger.info).toHaveBeenCalledWith('macvoice plugin registered');
+  });
+
+  it('should handle missing optional api methods gracefully', () => {
+    // Should not throw if api.on is missing
+    const mockApiMinimal = {
+      registerSpeechProvider: jest.fn(),
+    };
+    
+    expect(() => register(mockApiMinimal)).not.toThrow();
   });
 });

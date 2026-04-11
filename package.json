@@ -1,5 +1,5 @@
 {
-  "name": "@acwilan/macvoice-provider",
+  "name": "macvoice",
   "version": "0.1.0",
   "description": "OpenClaw provider for macOS voice message support via voicecli",
   "scripts": {
@@ -34,6 +34,14 @@
   "openclaw": {
     "extensions": [
       "./src/index.ts"
-    ]
+    ],
+    "compat": {
+      "pluginApi": ">=2026.4.0",
+      "minGatewayVersion": "2026.4.0"
+    },
+    "build": {
+      "openclawVersion": "2026.4.5",
+      "pluginSdkVersion": "2026.4.5"
+    }
   }
 }
