@@ -205,5 +205,5 @@ export function register(api: any) {
 // Legacy alias for backward compatibility
 export const activate = register;
 
-// Default export for OpenClaw
+// Default export for OpenClaw (both ESM and CommonJS compatible)
 export default register;

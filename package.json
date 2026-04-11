@@ -2,6 +2,8 @@
   "name": "macvoice",
   "version": "0.1.1",
   "description": "OpenClaw provider for macOS voice message support via voicecli",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
