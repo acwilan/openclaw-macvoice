@@ -1,5 +1,5 @@
 {
-  "id": "@acwilan/macvoice",
+  "id": "macvoice",
   "name": "macOS Voice Messages",
   "description": "Transcribe voice messages and respond with voice using native macOS speech APIs via voicecli.",
   "version": "0.1.0",
@@ -7,10 +7,10 @@
   "license": "MIT",
   "type": "plugin",
   "enabledByDefault": false,
-  "providers": ["@acwilan/macvoice"],
+  "providers": ["macvoice"],
   "platforms": ["darwin"],
   "contracts": {
-    "voiceProviders": ["@acwilan/macvoice"]
+    "voiceProviders": ["macvoice"]
   },
   "requirements": [
     {

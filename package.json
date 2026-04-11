@@ -1,9 +1,7 @@
 {
-  "name": "@acwilan/openclaw-macvoice-plugin",
+  "name": "@acwilan/macvoice-provider",
   "version": "0.1.0",
-  "description": "OpenClaw plugin for macOS voice message support via voicecli",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "OpenClaw provider for macOS voice message support via voicecli",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -13,7 +11,7 @@
     "version:patch": "npm version patch \u0026\u0026 npm run changelog \u0026\u0026 git add CHANGELOG.md package.json \u0026\u0026 git commit -m \"chore(release): update changelog and bump version\"",
     "version:minor": "npm version minor \u0026\u0026 npm run changelog \u0026\u0026 git add CHANGELOG.md package.json \u0026\u0026 git commit -m \"chore(release): update changelog and bump version\"",
     "version:major": "npm version major \u0026\u0026 npm run changelog \u0026\u0026 git add CHANGELOG.md package.json \u0026\u0026 git commit -m \"chore(release): update changelog and bump version\"",
-    "publish:clawhub": "clawhub package publish \"$(pwd)\" --family code-plugin --source-repo acwilan/openclaw-macvoice --source-commit $(git rev-parse HEAD) --name @acwilan/macvoice --version $(node -p \"require('./package.json').version\")"
+    "publish:clawhub": "clawhub package publish \"$(pwd)\" --family code-plugin --source-repo acwilan/openclaw-macvoice --source-commit $(git rev-parse HEAD) --name macvoice --version $(node -p \"require('./package.json').version\")"
   },
   "keywords": [
     "openclaw",
@@ -34,9 +32,8 @@
     "typescript": "^5.0.0"
   },
   "openclaw": {
-    "id": "@acwilan/macvoice",
-    "name": "macOS Voice Messages",
-    "description": "Transcribe voice messages and respond with voice (macOS only)",
-    "version": "0.1.0"
+    "extensions": [
+      "./src/index.ts"
+    ]
   }
 }

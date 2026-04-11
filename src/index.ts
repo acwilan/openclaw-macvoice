@@ -149,7 +149,7 @@ export class VoicePlugin {
 
 // OpenClaw plugin hook
 export default {
-  name: '@acwilan/macvoice',
+  name: 'macvoice',
   version: '0.1.0',
   
   async init(ctx: any, config: VoicePluginConfig) {
