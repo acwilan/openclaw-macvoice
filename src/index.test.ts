@@ -73,7 +73,7 @@ describe('OpenClaw plugin export', () => {
     const plugin = await import('./index');
     const defaultExport = plugin.default;
 
-    expect(defaultExport).toHaveProperty('name', '@acwilan/macvoice');
+    expect(defaultExport).toHaveProperty('name', 'macvoice');
     expect(defaultExport).toHaveProperty('version', '0.1.0');
     expect(defaultExport).toHaveProperty('init');
     expect(defaultExport).toHaveProperty('onVoiceMessage');
