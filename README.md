@@ -19,6 +19,10 @@ OpenClaw plugin for voice message support using native **macOS** speech APIs via
   brew tap acwilan/voicecli
   brew install voicecli
   ```
+- **ffmpeg** (for Telegram voice compatibility):
+  ```bash
+  brew install ffmpeg
+  ```
 
 ## Installation
 
