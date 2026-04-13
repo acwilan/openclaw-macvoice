@@ -30,6 +30,7 @@
     "@types/node": "^20.0.0",
     "conventional-changelog-cli": "^5.0.0",
     "jest": "^30.3.0",
+    "openclaw": ">=2026.4.0",
     "ts-jest": "^29.4.9",
     "typescript": "^5.0.0"
   },
