@@ -10,7 +10,8 @@
   "providers": ["macvoice"],
   "platforms": ["darwin"],
   "contracts": {
-    "voiceProviders": ["macvoice"]
+    "voiceProviders": ["macvoice"],
+    "mediaUnderstandingProviders": ["macvoice"]
   },
   "requirements": [
     {
