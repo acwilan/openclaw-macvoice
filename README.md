@@ -142,6 +142,10 @@ Once configured, the plugin works automatically:
 
 Use `[[tts:text]]...[[/tts:text]]` tags in your OpenClaw responses to force voice output for specific messages.
 
+### Limitations
+
+- **Per-agent voice configuration**: OpenClaw does not currently support agent-level TTS voice overrides. The voice is configured globally under `messages.tts.providers.macvoice`. To use different voices, use the `[[tts:voice=...]]` directive tag in your responses (e.g., `[[tts:voice=Karen]]Hello[[/tts:text]]`).
+
 ## Platform Support
 
 | Platform | Status |
