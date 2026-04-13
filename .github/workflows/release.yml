@@ -44,6 +44,9 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         continue-on-error: true
 
+      - name: Install ClawHub CLI
+        run: npm install -g @clawhub/cli
+
       - name: Publish to ClawHub
         run: |
           if command -v clawhub &> /dev/null; then
