@@ -24,86 +24,123 @@ OpenClaw plugin for voice message support using native **macOS** speech APIs via
   brew install ffmpeg
   ```
 
-## Installation
+## First-Time Setup
+
+Before using the plugin, you need to grant macOS permissions to voicecli:
 
 ```bash
-# From OpenClaw skill directory
-npm install openclaw-macvoice
+# Generate a test audio file
+voicecli speak "Hello world" --voice Samantha --output /tmp/test.aiff
+
+# Transcribe it back (this triggers the speech recognition permission prompt)
+voicecli transcribe /tmp/test.aiff
+
+# Clean up
+rm /tmp/test.aiff
 ```
 
-## Usage
+You should see system permission dialogs for **Microphone** and **Speech Recognition** — click **Allow** for both.
 
-### Basic
+## Installation
 
-```typescript
-import macvoice from 'openclaw-macvoice';
+Install from [ClawHub](https://clawhub.ai):
 
-// Initialize
-const plugin = await macvoice.init(ctx, {
-  voice: 'com.apple.voice.compact.en-US.Samantha',
-  rate: 0.5,
-});
-
-// Transcribe a voice message
-const transcription = await plugin.transcribe('/path/to/audio.m4a');
-console.log('User said:', transcription);
-
-// Respond with voice
-const audioPath = await plugin.speak('Hello, how can I help you?');
-// Send audioPath as voice message
+```bash
+openclaw plugins install macvoice
 ```
 
-### With Telegram Channel
+Or install from source:
 
-```typescript
-// In your Telegram OpenClaw handler
-import macvoice from 'openclaw-macvoice';
+```bash
+openclaw plugins install /path/to/openclaw-macvoice
+```
 
-export default {
-  async onVoiceMessage(message, ctx) {
-    // Initialize if not already
-    if (!ctx.macvoice) {
-      await macvoice.init(ctx, { rate: 0.5 });
-    }
-    
-    // Transcribe
-    const text = await ctx.macvoice.transcribe(message.audioPath);
-    
-    // Get AI response (your existing logic)
-    const response = await ctx.llm.chat(text);
-    
-    // Convert to voice
-    const responseAudio = await ctx.macvoice.speak(response);
-    
-    // Send voice response
-    await ctx.telegram.sendVoice({
-      chat_id: message.chat_id,
-      voice: responseAudio,
-    });
-  },
-};
+Then restart the OpenClaw gateway:
+
+```bash
+openclaw gateway restart
 ```
 
 ## Configuration
 
+Add to your `~/.openclaw/openclaw.json` under `messages.tts`:
+
+```json
+{
+  "messages": {
+    "tts": {
+      "auto": "inbound",
+      "provider": "macvoice",
+      "providers": {
+        "macvoice": {
+          "voice": "Samantha",
+          "rate": 0.5
+        }
+      }
+    }
+  }
+}
+```
+
+### Configuration Options
+
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `voice` | `string` | — | Voice identifier (see `voicecli voices`) |
-| `rate` | `number` | `0.5` | Speech rate 0.0-1.0 |
-| `tempDir` | `string` | `os.tmpdir()` | Directory for temporary audio files |
+| `auto` | `string` | `"off"` | When to use TTS: `"off"`, `"always"`, `"inbound"` (voice replies to voice messages), or `"tagged"` (only with `[[tts]]` tags) |
+| `provider` | `string` | — | Set to `"macvoice"` |
+| `providers.macvoice.voice` | `string` | `"Samantha"` | Voice to use. Run `voicecli voices` to see available voices |
+| `providers.macvoice.rate` | `number` | `0.5` | Speech rate (0.0-1.0). Lower is slower |
+| `providers.macvoice.tempDir` | `string` | `~/tmp/openclaw-macvoice` | Directory for temporary audio files |
 
-## API
+### Available Voices
 
-### `MacVoicePlugin`
+To list available voices:
 
-#### `transcribe(audioPath: string): Promise<string>`
-Transcribe audio file to text.
+```bash
+voicecli voices
+```
 
-#### `speak(text: string, options?): Promise<string>`
-Convert text to speech. Returns path to generated audio file.
+Common voices include:
+- `Samantha` (default, US English)
+- `Alex` (US English)
+- `Karen` (Australian English)
+- `Daniel` (British English)
+- `Moira` (Irish English)
+- `Tessa` (South African English)
 
-#### `processVoiceMessage(audioPath, options)`
-Combined method: transcribe + optionally respond with voice.
+### Changing Voice
+
+Update your `~/.openclaw/openclaw.json`:
+
+```json
+{
+  "messages": {
+    "tts": {
+      "providers": {
+        "macvoice": {
+          "voice": "Karen",
+          "rate": 0.6
+        }
+      }
+    }
+  }
+}
+```
+
+Then reload the gateway:
+
+```bash
+openclaw gateway restart
+```
+
+## Usage
+
+Once configured, the plugin works automatically:
+
+- **Send a voice message** → OpenClaw transcribes it and can reply with voice (if `auto: "inbound"`)
+- **Send a text message** → Normal text reply (unless `auto: "always"`)
+
+Use `[[tts:text]]...[[/tts:text]]` tags in your OpenClaw responses to force voice output for specific messages.
 
 ## Platform Support
 
