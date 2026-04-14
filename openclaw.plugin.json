@@ -2,7 +2,7 @@
   "id": "macvoice",
   "name": "macOS Voice Messages",
   "description": "Transcribe voice messages and respond with voice using native macOS speech APIs via voicecli.",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "author": "Andres Rovira",
   "license": "MIT",
   "type": "plugin",
