@@ -2,16 +2,24 @@
   "id": "macvoice",
   "name": "macOS Voice Messages",
   "description": "Transcribe voice messages and respond with voice using native macOS speech APIs via voicecli.",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "author": "Andres Rovira",
   "license": "MIT",
   "type": "plugin",
   "enabledByDefault": false,
-  "providers": ["macvoice"],
-  "platforms": ["darwin"],
+  "providers": [
+    "macvoice"
+  ],
+  "platforms": [
+    "darwin"
+  ],
   "contracts": {
-    "voiceProviders": ["macvoice"],
-    "mediaUnderstandingProviders": ["macvoice"]
+    "voiceProviders": [
+      "macvoice"
+    ],
+    "mediaUnderstandingProviders": [
+      "macvoice"
+    ]
   },
   "requirements": [
     {
@@ -32,8 +40,8 @@
       "rate": {
         "type": "number",
         "default": 0.5,
-        "minimum": 0.0,
-        "maximum": 1.0,
+        "minimum": 0,
+        "maximum": 1,
         "description": "Speech rate 0.0-1.0 (default: 0.5)"
       },
       "tempDir": {

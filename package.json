@@ -10,9 +10,10 @@
     "test": "jest",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "changelog:check": "conventional-changelog -p angular -i CHANGELOG.md -s --dry-run",
-    "version:patch": "npm version patch && npm run changelog && git add CHANGELOG.md package.json && git commit -m \"chore(release): update changelog and bump version\"",
-    "version:minor": "npm version minor && npm run changelog && git add CHANGELOG.md package.json && git commit -m \"chore(release): update changelog and bump version\"",
-    "version:major": "npm version major && npm run changelog && git add CHANGELOG.md package.json && git commit -m \"chore(release): update changelog and bump version\"",
+    "version:sync": "node -e \"const fs = require('fs'); const pkg = require('./package.json'); const manifestPath = './openclaw.plugin.json'; const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')); manifest.version = pkg.version; fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\\n');\"",
+    "version:patch": "npm version patch --no-git-tag-version && npm run version:sync && npm run changelog && git add CHANGELOG.md package.json openclaw.plugin.json && git commit -m \"chore(release): update changelog and bump version\" && git tag v$(node -p \"require('./package.json').version\")",
+    "version:minor": "npm version minor --no-git-tag-version && npm run version:sync && npm run changelog && git add CHANGELOG.md package.json openclaw.plugin.json && git commit -m \"chore(release): update changelog and bump version\" && git tag v$(node -p \"require('./package.json').version\")",
+    "version:major": "npm version major --no-git-tag-version && npm run version:sync && npm run changelog && git add CHANGELOG.md package.json openclaw.plugin.json && git commit -m \"chore(release): update changelog and bump version\" && git tag v$(node -p \"require('./package.json').version\")",
     "publish:clawhub": "clawhub package publish \"$(pwd)\" --family code-plugin --source-repo acwilan/openclaw-macvoice --source-commit $(git rev-parse HEAD) --name macvoice --version $(node -p \"require('./package.json').version\")"
   },
   "keywords": [
