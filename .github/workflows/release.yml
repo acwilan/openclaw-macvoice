@@ -52,7 +52,7 @@ jobs:
           if command -v clawhub &> /dev/null; then
             clawhub publish
           else
-            npx clawhub@latest install openclaw-macvoice
+            npx clawhub@latest publish
           fi
         env:
           CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}
