@@ -52,8 +52,7 @@ jobs:
           if command -v clawhub &> /dev/null; then
             clawhub publish
           else
-            echo "ClawHub CLI not installed, skipping ClawHub publish"
-            echo "To publish manually: clawhub publish"
+            npx clawhub@latest install openclaw-macvoice
           fi
         env:
           CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}
