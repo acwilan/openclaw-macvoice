@@ -108,19 +108,58 @@ Common voices include:
 - `Moira` (Irish English)
 - `Tessa` (South African English)
 
-### Changing Voice
+### Transcription (STT) Configuration
 
-Update your `~/.openclaw/openclaw.json`:
+To enable automatic transcription of voice messages, add to your `~/.openclaw/openclaw.json` under `tools.media.audio`:
+
+```json
+{
+  "tools": {
+    "media": {
+      "audio": {
+        "enabled": true,
+        "models": [
+          {
+            "provider": "macvoice",
+            "model": "macvoice-transcribe"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+With this configuration, voice messages sent to OpenClaw will be automatically transcribed using macOS native speech recognition.
+
+### Complete Configuration (TTS + STT)
+
+For both text-to-speech and speech-to-text:
 
 ```json
 {
   "messages": {
     "tts": {
+      "auto": "inbound",
+      "provider": "macvoice",
       "providers": {
         "macvoice": {
-          "voice": "Karen",
-          "rate": 0.6
+          "voice": "Samantha",
+          "rate": 0.5
         }
+      }
+    }
+  },
+  "tools": {
+    "media": {
+      "audio": {
+        "enabled": true,
+        "models": [
+          {
+            "provider": "macvoice",
+            "model": "macvoice-transcribe"
+          }
+        ]
       }
     }
   }
