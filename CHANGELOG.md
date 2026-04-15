@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/acwilan/openclaw-macvoice/compare/v1.1.0...v1.1.1) (2026-04-15)
+
+
+### Features
+
+* add capabilities, defaultModels and autoPriority to MediaUnderstandingProvider ([e5a1806](https://github.com/acwilan/openclaw-macvoice/commit/e5a18062b514d24b7879b7a3ec286777feb3c36b))
 # [1.1.0](https://github.com/acwilan/openclaw-macvoice/compare/v1.0.0...v1.1.0) (2026-04-14)
 # [1.0.0](https://github.com/acwilan/openclaw-macvoice/compare/v0.1.2...v1.0.0) (2026-04-14)
 
