@@ -121,7 +121,7 @@ To enable automatic transcription of voice messages, add to your `~/.openclaw/op
         "models": [
           {
             "provider": "macvoice",
-            "model": "macvoice-transcribe"
+            "model": "default"
           }
         ]
       }
@@ -129,6 +129,8 @@ To enable automatic transcription of voice messages, add to your `~/.openclaw/op
   }
 }
 ```
+
+> **Note:** The `model` value can be anything (e.g., `"default"`, `"macvoice-transcribe"`, `"local"`) — it's just a label. The `provider: "macvoice"` is what routes the request to this plugin.
 
 With this configuration, voice messages sent to OpenClaw will be automatically transcribed using macOS native speech recognition.
 
@@ -157,7 +159,7 @@ For both text-to-speech and speech-to-text:
         "models": [
           {
             "provider": "macvoice",
-            "model": "macvoice-transcribe"
+            "model": "default"
           }
         ]
       }
@@ -165,6 +167,8 @@ For both text-to-speech and speech-to-text:
   }
 }
 ```
+
+> **Note:** The `model` value under `tools.media.audio.models` is just a label — use any value you prefer.
 
 Then reload the gateway:
 
