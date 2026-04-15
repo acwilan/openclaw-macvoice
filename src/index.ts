@@ -211,6 +211,9 @@ function buildMacVoiceMediaProvider(): Omit<MediaUnderstandingProviderPlugin, "i
   const voiceCliPath = getVoiceCliPath();
 
   return {
+    capabilities: ["audio"],
+    defaultModels: { audio: "macvoice-transcribe" },
+    autoPriority: { audio: 5 },
     transcribeAudio: async (req: AudioTranscriptionRequest): Promise<AudioTranscriptionResult> => {
       const { buffer } = req;
       // Ensure temp directory
