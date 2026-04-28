@@ -34,6 +34,7 @@ interface MacVoiceConfig extends OpenClawConfig {
   voice?: string;
   rate?: number;
   tempDir?: string;
+  locale?: string; // BCP 47 locale for voice selection
 }
 
 /**
@@ -64,6 +65,7 @@ function normalizeConfig(rawConfig: unknown): MacVoiceConfig {
     tempDir: config.tempDir
       ? config.tempDir.replace(/^~\//, homedir() + "/")
       : join(tmpdir(), "openclaw-macvoice"),
+    locale: config.locale,
   };
 }
 
@@ -114,13 +116,24 @@ function buildMacVoiceSpeechProvider(config: MacVoiceConfig): SpeechProviderPlug
       const args = [
         "speak",
         textFilePath,
-        "--voice",
-        providerCfg.voice || "Samantha",
         "--rate",
         String(providerCfg.rate ?? 0.5),
         "--output",
         tempAiffPath,
       ];
+
+      // Add voice or locale (voice takes precedence)
+      const providerOverrides = req.providerOverrides as { locale?: string } | undefined;
+      const effectiveLocale = providerOverrides?.locale || providerCfg.locale;
+      
+      if (providerCfg.voice) {
+        args.push("--voice", providerCfg.voice);
+      } else if (effectiveLocale) {
+        args.push("--locale", effectiveLocale);
+      } else {
+        // Default voice
+        args.push("--voice", "Samantha");
+      }
 
       try {
         // Generate AIFF
@@ -215,7 +228,7 @@ function buildMacVoiceMediaProvider(): Omit<MediaUnderstandingProviderPlugin, "i
     defaultModels: { audio: "macvoice-transcribe" },
     autoPriority: { audio: 5 },
     transcribeAudio: async (req: AudioTranscriptionRequest): Promise<AudioTranscriptionResult> => {
-      const { buffer } = req;
+      const { buffer, language } = req;
       // Ensure temp directory
       const tempDir = join(tmpdir(), "openclaw-macvoice");
       await mkdir(tempDir, { recursive: true });
@@ -225,11 +238,11 @@ function buildMacVoiceMediaProvider(): Omit<MediaUnderstandingProviderPlugin, "i
       await writeFile(tempPath, buffer);
 
       try {
-        const { stdout } = await execFileAsync(
-          voiceCliPath,
-          ["transcribe", tempPath],
-          { timeout: 30000 }
-        );
+        const args = ["transcribe", tempPath];
+        if (language) {
+          args.push("--locale", language);
+        }
+        const { stdout } = await execFileAsync(voiceCliPath, args, { timeout: 30000 });
         return { text: stdout.trim() };
       } finally {
         // Cleanup

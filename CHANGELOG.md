@@ -1,3 +1,14 @@
+## [1.2.0](https://github.com/acwilan/openclaw-macvoice/compare/v1.1.1...v1.2.0) (2026-04-28)
+
+
+### Features
+
+* add locale support for TTS and STT ([de233bb](https://github.com/acwilan/openclaw-macvoice/commit/de233bb))
+  - New `locale` config option for voice selection by BCP 47 locale
+  - Support `--locale` flag in transcribe command when language is specified
+  - Support `providerOverrides.locale` for dynamic locale selection in synthesize
+  - Voice config takes precedence over locale; locale is fallback when no voice specified
+
 ## [1.1.1](https://github.com/acwilan/openclaw-macvoice/compare/v1.1.0...v1.1.1) (2026-04-15)
 
 

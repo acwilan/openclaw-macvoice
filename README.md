@@ -14,7 +14,7 @@ OpenClaw plugin for voice message support using native **macOS** speech APIs via
 ## Prerequisites
 
 - **macOS 13.0+** (required)
-- [voicecli](https://github.com/acwilan/voicecli) installed:
+- [voicecli](https://github.com/acwilan/voicecli) **>= 0.3.0** installed:
   ```bash
   brew tap acwilan/voicecli
   brew install voicecli
@@ -74,6 +74,7 @@ Add to your `~/.openclaw/openclaw.json` under `messages.tts`:
       "providers": {
         "macvoice": {
           "voice": "Samantha",
+          "locale": "en-US",
           "rate": 0.5
         }
       }
@@ -89,6 +90,7 @@ Add to your `~/.openclaw/openclaw.json` under `messages.tts`:
 | `auto` | `string` | `"off"` | When to use TTS: `"off"`, `"always"`, `"inbound"` (voice replies to voice messages), or `"tagged"` (only with `[[tts]]` tags) |
 | `provider` | `string` | — | Set to `"macvoice"` |
 | `providers.macvoice.voice` | `string` | `"Samantha"` | Voice to use. Run `voicecli voices` to see available voices |
+| `providers.macvoice.locale` | `string` | — | BCP 47 locale (e.g., `en-US`, `es-GT`) for voice selection. Used when no voice is specified. Run `voicecli locales` to see supported locales |
 | `providers.macvoice.rate` | `number` | `0.5` | Speech rate (0.0-1.0). Lower is slower |
 | `providers.macvoice.tempDir` | `string` | `~/tmp/openclaw-macvoice` | Directory for temporary audio files |
 
@@ -98,6 +100,12 @@ To list available voices:
 
 ```bash
 voicecli voices
+```
+
+To list supported locales for transcription:
+
+```bash
+voicecli locales
 ```
 
 Common voices include:
@@ -132,7 +140,7 @@ To enable automatic transcription of voice messages, add to your `~/.openclaw/op
 
 > **Note:** The `model` value can be anything (e.g., `"default"`, `"macvoice-transcribe"`, `"local"`) — it's just a label. The `provider: "macvoice"` is what routes the request to this plugin.
 
-With this configuration, voice messages sent to OpenClaw will be automatically transcribed using macOS native speech recognition.
+With this configuration, voice messages sent to OpenClaw will be automatically transcribed using macOS native speech recognition. The transcription respects OpenClaw's `talk.speechLocale` setting for language detection.
 
 ### Complete Configuration (TTS + STT)
 
@@ -176,6 +184,19 @@ Then reload the gateway:
 openclaw gateway restart
 ```
 
+## Locale Support
+
+The plugin supports locale-aware voice selection and speech recognition:
+
+### TTS (Voice Output)
+- Set `locale` in config (e.g., `es-GT` for Guatemalan Spanish) to use a voice for that locale
+- If `voice` is specified, it takes precedence over `locale`
+- Use `[[tts:locale=es-MX]]...[[/tts:text]]` directive for per-message locale override
+
+### STT (Transcription)
+- Respects OpenClaw's `talk.speechLocale` setting
+- Automatically detects language if no locale is specified
+
 ## Usage
 
 Once configured, the plugin works automatically:
@@ -187,7 +208,7 @@ Use `[[tts:text]]...[[/tts:text]]` tags in your OpenClaw responses to force voic
 
 ### Limitations
 
-- **Per-agent voice configuration**: OpenClaw does not currently support agent-level TTS voice overrides. The voice is configured globally under `messages.tts.providers.macvoice`. To use different voices, use the `[[tts:voice=...]]` directive tag in your responses (e.g., `[[tts:voice=Karen]]Hello[[/tts:text]]`).
+- **Per-agent voice configuration**: OpenClaw does not currently support agent-level TTS voice overrides. The voice is configured globally under `messages.tts.providers.macvoice`. To use different voices or locales, use the `[[tts:voice=...]]` or `[[tts:locale=...]]` directive tags in your responses (e.g., `[[tts:voice=Karen]]Hello[[/tts:text]]` or `[[tts:locale=es-MX]]Hola[[/tts:text]]`).
 
 ## Platform Support
 
